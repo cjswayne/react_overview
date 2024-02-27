@@ -12,24 +12,32 @@ import { useStore } from './store'
 
 
 function App() {
-  const [loading, setLoading] = useState(true)
+  const { state, setState } = useStore();
+
+
+  // const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    setLoading(false)
+    
+    // setLoading(false)
   })
 
-  const { state } = useStore();
   return (
     <>
       <Header />
       
       {state.showNoteForm && <NoteForm />}
-      <main>
+
+          
+          <main>
         <Routes>
+        
           <Route path="/" element={<Home />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
+
+      
     </>
   )
 }
