@@ -13,6 +13,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.fade-out {
+  transition: opacity 1s ease-out;
+  opacity: 0; /* Target opacity for fade-out */
+}
+
+
 a {
   font-weight: 500;
   color: #646cff;

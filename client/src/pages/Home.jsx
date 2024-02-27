@@ -1,52 +1,73 @@
-import {useEffect, useState} from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 import dayjs from 'dayjs'
 
-function Home({notes, setNotes, setEditNote, setShowNoteForm}){
+import { useStore } from '../store'
+
+function Home() {
+
+    const { state, setState } = useStore();
+    const [deletingNoteId, setDeletingNoteId] = useState(null)
 
     const handleEditNote = (note) => {
-        setEditNote(note)
-        setShowNoteForm(true)
+        setState({
+            ...state,
+            editNote: note,
+            showNoteForm: true
+        })
+
     }
 
     const deleteNote = async (noteId, index) => {
-        await axios.delete(`/api/notes/${noteId}`)
 
-        notes.splice(index, 1)
+        setDeletingNoteId(noteId);
 
-        setNotes([...notes])
+        setTimeout(async () => {
+            await axios.delete(`/api/notes/${noteId}`)
+
+            state.notes.splice(index, 1)
+
+            // setNotes([...notes])
+            setState({
+                ...state,
+                notes: [...state.notes],
+                editNote: null
+            })
+
+            setDeletingNoteId(null);
+
+        }, 1000)
 
 
-        setEditNote(null)
     }
 
     useEffect(() => {
         axios.get('/api/notes/')
             .then((res) => {
-                setNotes(res.data)
-
-                console.log(res.data)
-                console.log(notes)
-
+                setState({
+                    ...state,
+                    notes: res.data
+                })
             })
     }, [])
 
     return (
         <>
             <h1>Welcome to the note app</h1>
-            <div>
+            <div className="flex flex-column-reverse">
 
-            {!notes.length && <h2>No Notes have been added</h2>}
+                {!state.notes.length && <h2>No Notes have been added</h2>}
 
-                {notes.map((note, index) => {
-                  return ( <div key={note._id} className="note">
-                        <h3>{note.text}</h3>
-                        <p>Created on: {(dayjs(note.createdAt).format('MM/DD/YYYY hh:mm a'))}</p>
-                        <div className="flex flex-row">
-                        <button onClick={() => handleEditNote(note)}>Edit Note</button>
-                        <button onClick={() => deleteNote(note._id, index)}> Delete Note</button>
-                        </div>
-                    </div>)
+                {state.notes.map((note, index) => {
+                    return (
+                        <div key={note._id} className={`note ${deletingNoteId === note._id ? 'fade-out' : ''}`}>
+                            <h3>{deletingNoteId === note._id ? 'Deleting...' : note.text}</h3>
+                            <p>Created on: {(dayjs(note.createdAt).format('MM/DD/YYYY hh:mm a'))}</p>
+                            <div className="flex flex-row">
+                                <button onClick={() => handleEditNote(note)}>Edit Note</button>
+                                <button onClick={() => deleteNote(note._id, index)}> Delete Note</button>
+                            </div>
+                        </div>)
                 })}
             </div>
         </>

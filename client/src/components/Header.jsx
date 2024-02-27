@@ -1,11 +1,18 @@
 import {NavLink} from 'react-router-dom'
+import {useStore} from '../store'
 
 
-function Header({setShowNoteForm}){
+function Header(){
+    const {setState} = useStore();
 
-    const showModal = () => setShowNoteForm(true)
+    const showModal = () => setState((oldState) => {
+        return {
+            ...oldState,
+            showNoteForm: true
+        }
+    })
+
         
-
     return (
         <header className="flex flex row justify-between items-center">
             <h3>Making Notes</h3>

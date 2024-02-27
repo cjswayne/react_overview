@@ -1,11 +1,9 @@
 import axios from 'axios'
 import { useState, useEffect } from 'react'
+import {useStore} from '../store'
 
-function NoteForm({
-    setShowNoteForm, 
-    setNotes, 
-    editNote, 
-    setEditNote }){
+function NoteForm(){
+    const {state, setState} = useStore();
 
     // const [noteText, setNoteText] = useState('')
     // const [noteText, setNoteText] = useState(editNote.text ? 'editNote' : '')
@@ -14,47 +12,52 @@ function NoteForm({
     // console.log(noteChanged, (noteText && noteChanged))
 
     useEffect(() => {
-        if(editNote){
-            setNoteText(editNote.text)
+        if(state.editNote){
+            setNoteText(state.editNote.text)
         }
     }, [])
 
     const closeModal = () => {
-        setEditNote(null)
-        setShowNoteForm(false)
+        setState({
+            ...state,
+            showNoteForm:false,
+            editNote:null
+        })
     }
 
     const handleCreateOrEditNote = async (e) => {
-
-
         e.preventDefault();
         if(noteText.trim()){
             let res
 
-            if(!editNote){
+            if(!state.editNote){
                 res = await axios.post('/api/notes', {
                     text:noteText
                 })
-    
-                setNotes((oldState) => {
-                    return [...oldState, res.data]
+                console.log(res.data)
+                setState({
+                    ...state,
+                    showNoteForm:false,
+                    notes:[...state.notes, res.data]
                 })
+
             } else {
-              await axios.put(`/api/notes/${editNote._id}`, {
-                    note_id:editNote._id,
+              await axios.put(`/api/notes/${state.editNote._id}`, {
+                    note_id:state.editNote._id,
                     text:noteText
                 })
-    
-                setNotes((oldState) => {
-                    // const note = oldState.find((n) => n._id === editNote._id)
-                    // note.text = noteText
-                    editNote.text = noteText;
-                    return [...oldState]
-                })
+
+                state.editNote.text = noteText;
+            setState({
+                ...state,
+                notes:[...state.notes],
+                showNoteForm:false,
+                editNote:null
+            })
+
             }
-    
-            setShowNoteForm(false)
-            setEditNote(null)
+
+
         } else {
             alert('Input cannot be empty')
         }
@@ -68,7 +71,7 @@ function NoteForm({
 
     return (
         <div onSubmit={handleCreateOrEditNote}  className="note-form pa4 br4">
-            <h1 className="tc mA pa2">{editNote ? 'Edit' : 'Create'} Note</h1>
+            <h1 className="tc mA pa2">{state.editNote ? 'Edit' : 'Create'} Note</h1>
             <form className="flex flex-column mA items-center">
         <input 
             value={ noteText }
@@ -76,7 +79,7 @@ function NoteForm({
             className="ma2 pb3 pt3 pl3 br4 b--black bw2 w-100" 
             type="text" 
             placeholder="Enter Note text" />
-        <button className="w-100">{editNote ? 'Save' : 'Create'} Note</button>
+        <button className="w-100">{state.editNote ? 'Save' : 'Create'} Note</button>
             <button onClick={closeModal} className="cancel-btn w-100 ma2 bg-red color-white">Cancel</button>
             </form>
         </div>
