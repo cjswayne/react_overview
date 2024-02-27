@@ -87,22 +87,23 @@ button:focus-visible {
 
 
 /* Custom Styles */
-header nav a:not(:last-child) {
-  margin-right: 10px;
-}
 
-header nav a:hover, header nav a.active {
-  text-decoration: underline;
-}
-
-header nav button.create-btn{
-  background: none;
-  border:1px solid #eee;
-}
-header nav button.create-btn:hover{
-  color:orange;
-  background-color:#646cff;
-  transition: background 0.3s;
+header{
+  nav a:not(:last-child) {
+    margin-right: 10px;
+  }
+  nav a:hover, header nav a.active {
+    text-decoration: underline;
+  }
+  nav button.create-btn{
+    background: none;
+    border:1px solid #eee;
+  }
+  header nav button.create-btn:hover{
+    color:orange;
+    background-color:#646cff;
+    transition: background 0.3s;
+  }
 }
 
 @media (prefers-color-scheme: light) {
