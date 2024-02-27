@@ -35,6 +35,9 @@ function Home({notes, setNotes, setEditNote, setShowNoteForm}){
         <>
             <h1>Welcome to the note app</h1>
             <div>
+
+            {!notes.length && <h2>No Notes have been added</h2>}
+
                 {notes.map((note, index) => {
                   return ( <div key={note._id} className="note">
                         <h3>{note.text}</h3>
