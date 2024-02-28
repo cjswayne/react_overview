@@ -10,8 +10,8 @@
     "install": "cd ./server && npm i",
     "save": "git add -A && git commit -m \"ready for deploy\"",
     "push": "git push heroku main",
-    "deploy:render":"npm run client:build && npm run save && npm run push:render",
-    "push:render":"git push origin main",
+    "deploy:render": "npm run client:build && npm run save && npm run push:render",
+    "push:render": "git push origin main",
     "deploy": "npm run client:build && npm run save && npm run push",
     "start": "cd ./server && npm start"
   },
@@ -20,5 +20,8 @@
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1"
   }
 }
